@@ -1,15 +1,3 @@
----
-license: apache-2.0
-library_name: transformers
-pipeline_tag: feature-extraction
-tags:
-  - audio
-  - audio-tokenizer
-  - neural-codec
-  - moss-audio-tokenizer
-  - pytorch-lightning
----
-
 <div align="center">
   <h1>Unofficial MOSS Audio Tokenizer Nano Trainer</h1>
   <p>Train and export a 16 kHz MOSS Nano neural audio codec.</p>
