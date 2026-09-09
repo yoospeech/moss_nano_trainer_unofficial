@@ -1,0 +1,22 @@
+# Deep learning (install matching torch/torchaudio builds for your CPU or CUDA runtime)
+torch>=2.0,<3.0
+torchaudio>=2.0,<3.0
+pytorch-lightning>=2.0,<3.0
+
+# Configuration
+hydra-core>=1.3,<2.0
+
+# Audio and numerical processing
+numpy>=1.23,<2.0
+librosa>=0.10,<0.11
+soundfile>=0.12,<1.0
+
+# Model tensor operations and command-line progress
+einops>=0.6,<1.0
+tqdm>=4.64,<5.0
+
+# Lightning training-log support and the README log viewer
+tensorboard>=2.12,<3.0
+
+# Vendored MOSS Nano architecture (validated with 4.57.1)
+transformers==4.57.1

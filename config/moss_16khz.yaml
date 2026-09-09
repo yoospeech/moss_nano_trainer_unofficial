@@ -1,0 +1,27 @@
+defaults:
+  - preprocess: default
+  - dataset: default
+  - model: moss_nano
+  - train: moss_nano
+  - _self_
+
+preprocess:
+  audio:
+    sr: ${model.moss_nano.sampling_rate}
+    channels: ${model.moss_nano.channels}
+dataset:
+  min_audio_length: 160000
+  num_workers: 8
+  pin_memory: true
+log_dir: pl_log/moss_16khz
+debug: false
+resume_ckpt: null
+ckpt: null
+input_dir: null
+output_dir: null
+num_quantizers: null # inference prefix; null uses all trained codebooks
+output_channel: 1 # export the second generated channel as mono
+hydra:
+  output_subdir: hydra
+  job:
+    chdir: false

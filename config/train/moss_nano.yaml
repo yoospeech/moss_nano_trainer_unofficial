@@ -1,0 +1,55 @@
+trainer:
+  accelerator: gpu
+  devices: 1
+  log_every_n_steps: 1
+  min_steps: 0
+  max_steps: null # train.py computes pretrain_steps + 2 * adversarial_steps
+  precision: bf16-mixed
+  limit_val_batches: 0
+  num_sanity_val_steps: 0
+  accumulate_grad_batches: 1
+lambdas:
+  lambda_disc: 1.0
+  lambda_feat_match_loss: 2.0
+  lambda_mel_loss: 15.0
+  lambda_adv: 1.0
+  lambda_stft_loss: 1.0
+
+use_mel_loss: true
+use_feat_match_loss: true
+
+stft_loss_params:
+  fft_sizes: [128, 256, 512, 1024, 2048]
+  hop_sizes: [32, 64, 128, 256, 512]
+  win_lengths: [128, 256, 512, 1024, 2048]
+  window: hann_window
+
+gen_optim_params:
+  lr: 1.0
+  betas: [0.8, 0.9]
+  weight_decay: 0.01
+disc_optim_params:
+  lr: 1.0
+  betas: [0.8, 0.9]
+  weight_decay: 0.0
+gen_grad_clip: 0.5
+disc_grad_clip: 0.5
+# Reference: arXiv:2602.10934 (Full-size CAT uses 520k pretrain + 500k GAN at B=1536/768).
+# MOSS Nano is a compact architecture (~20-50M params) trained on smaller datasets/batches.
+# Optimized recipe for Nano: total 500k G-updates (250k pretrain + 250k adversarial).
+stages:
+  pretrain_steps: 250000
+  adversarial_steps: 250000
+
+gen_schedule_params:
+  warmup_step: 1000
+  down_step: 499000 # warmup(1000) + down_step(499000) = 500000 total steps
+  min_lr: 1.0e-5
+  max_lr: 1.0e-4
+disc_schedule_params:
+  warmup_step: 1000
+  down_step: 249000 # warmup(1000) + down_step(249000) = 250000 adversarial steps
+  min_lr: 1.0e-5
+  max_lr: 1.0e-4
+
+checkpoint_interval: 1000
