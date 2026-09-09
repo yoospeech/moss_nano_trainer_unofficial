@@ -111,13 +111,6 @@ RESUME_CKPT=/path/to/last.ckpt \
 bash train.sh
 ```
 
-Hydra overrides can be appended:
-
-```bash
-TRAIN_FILELIST=/path/to/train.json \
-bash train.sh dataset.train.batch_size=4 model.moss_nano.channels=1
-```
-
 Supported environment variables include `PYTHON`, `TRAIN_FILELIST`,
 `VAL_FILELIST`, `TEST_FILELIST`, `BATCH_SIZE`, `DEVICES`, `ACCELERATOR`,
 `PRECISION`, `MAX_STEPS`, `LOG_DIR`, and `RESUME_CKPT`.
@@ -233,16 +226,6 @@ TensorBoard timestamps were inspected on 2026-09-10 (Asia/Seoul):
 
 This is a point-in-time record, not a claim about final model quality.
 Checkpoints and TensorBoard event files are excluded from the Git repository.
-
-## Tests
-
-```bash
-python3 -m unittest discover -s tests -v
-bash -n train.sh inference.sh
-```
-
-The tests cover resampling, mono/stereo batches, partial frames, gradients,
-normalized code decoding, stage transition, checkpoint restore, and resume.
 
 ## License
 
