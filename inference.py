@@ -4,9 +4,9 @@ from os.path import basename, join
 from time import time
 
 import hydra
-import librosa
 import soundfile as sf
 import torch
+import torchaudio
 from omegaconf import OmegaConf
 from tqdm import tqdm
 
@@ -37,14 +37,14 @@ def _build_model(cfg, checkpoint, device):
 
 
 def _load_audio(path, sample_rate, channels):
-    wav, _ = librosa.load(path, sr=sample_rate, mono=False)
-    if wav.ndim == 1:
-        wav = wav[None]
+    wav, source_rate = torchaudio.load(path)
+    if source_rate != sample_rate:
+        wav = torchaudio.functional.resample(wav, source_rate, sample_rate)
     if channels == 1:
-        wav = wav.mean(axis=0, keepdims=True)
+        wav = wav.mean(dim=0, keepdim=True)
     elif wav.shape[0] == 1:
-        wav = wav.repeat(channels, axis=0)
-    return torch.from_numpy(wav[:channels]).unsqueeze(0)
+        wav = wav.repeat(channels, 1)
+    return wav[:channels].unsqueeze(0)
 
 
 @hydra.main(config_path='config', config_name='moss_16khz', version_base=None)

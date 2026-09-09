@@ -12,7 +12,7 @@ from hydra import compose, initialize
 
 from data_module import DataModule, FSDataset
 from lightning_module import CodecLightningModule
-from inference import _build_model
+from inference import _build_model, _load_audio
 from moss_trainable import TrainableMossAudioTokenizer
 
 
@@ -80,6 +80,14 @@ class MossTrainingTest(unittest.TestCase):
         self.assertEqual(decoded.audio.shape, wav.shape)
         decoded_prefix = model.decode(encoded.audio_codes[:1], return_dict=True)
         self.assertEqual(decoded_prefix.audio.shape, wav.shape)
+
+    def test_inference_audio_upmix(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / 'mono.wav'
+            sf.write(path, np.random.randn(3200).astype('float32') * .01, 16000)
+            wav = _load_audio(path, sample_rate=16000, channels=2)
+            self.assertEqual(wav.shape, (1, 2, 3200))
+            torch.testing.assert_close(wav[:, 0], wav[:, 1])
 
     def test_training_checkpoint_resume_and_data(self):
         with tempfile.TemporaryDirectory() as directory:

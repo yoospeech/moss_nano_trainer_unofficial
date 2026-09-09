@@ -44,6 +44,18 @@ python3 make_json.py wav_paths.txt train.json
 TRAIN_FILELIST=/path/to/train.json bash train.sh
 ```
 
+The published development checkpoint was trained with this exact command:
+
+```bash
+TRAIN_FILELIST=libritts_train_combined_manifest.json \
+LOG_DIR=pl_log/moss_16khz_l2 \
+bash train.sh resume_ckpt=null model.moss_nano.l2_normalize=true
+```
+
+The manifest is not published because it contains local dataset paths.
+`l2_normalize=true` and `resume_ckpt=null` are already the defaults, but they
+are shown explicitly to document the run exactly.
+
 Resume with the original model and stage configuration:
 
 ```bash
@@ -76,6 +88,25 @@ CKPT=/path/to/last.ckpt \
 INPUT_DIR=/path/to/wavs \
 OUTPUT_DIR=./recon_wavs \
 bash inference.sh
+```
+
+The development inference command was:
+
+```bash
+CKPT=pl_log/moss_16khz_l2/last-v1.ckpt \
+INPUT_DIR=test_input \
+OUTPUT_DIR=recon_wavs_channel1 \
+PYTHON=/home/ysw/Documents/anaconda3/envs/vocos_3.13/bin/python \
+./inference.sh
+```
+
+For a fresh clone, download the checkpoint and use the included sample input:
+
+```bash
+CKPT=checkpoints/moss_nano_16khz.ckpt \
+INPUT_DIR=samples/input \
+OUTPUT_DIR=recon_wavs_channel1 \
+./inference.sh
 ```
 
 Append `num_quantizers=8` to decode with the first eight codebooks. The
