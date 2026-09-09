@@ -1,20 +1,79 @@
-# Unofficial MOSS Audio Tokenizer Nano Trainer
+---
+license: apache-2.0
+library_name: transformers
+pipeline_tag: feature-extraction
+tags:
+  - audio
+  - audio-tokenizer
+  - neural-codec
+  - moss-audio-tokenizer
+  - pytorch-lightning
+---
 
-An unofficial training and inference pipeline for a **16 kHz MOSS Audio
-Tokenizer Nano**. It includes RVQ training, mel reconstruction pretraining,
-and adversarial fine-tuning with multi-period and multi-resolution STFT
-discriminators. This project is not affiliated with the OpenMOSS team.
+<div align="center">
+  <h1>Unofficial MOSS Audio Tokenizer Nano Trainer</h1>
+  <p>Train and export a 16 kHz MOSS Nano neural audio codec.</p>
+
+  <a href="https://github.com/yoospeech/moss_nano_trainer_unofficial"><img src="https://img.shields.io/badge/GitHub-Trainer-181717?logo=github" alt="GitHub"></a>
+  <a href="https://huggingface.co/youspeech/moss_nano_trainer_unofficial"><img src="https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Model-FFD21E" alt="Hugging Face model"></a>
+  <a href="https://huggingface.co/OpenMOSS-Team/MOSS-Audio-Tokenizer-Nano"><img src="https://img.shields.io/badge/OpenMOSS-Upstream-4B8BBE" alt="OpenMOSS upstream"></a>
+  <img src="https://img.shields.io/badge/PyTorch-2.x-EE4C2C?logo=pytorch&logoColor=white" alt="PyTorch 2.x">
+  <img src="https://img.shields.io/badge/API%20compatibility-tested-success" alt="API compatibility tested">
+</div>
+
+> [!IMPORTANT]
+> This is a **16 kHz model trained from random initialization**. The official
+> OpenMOSS checkpoint is a 48 kHz stereo model; its boundary-layer weights are
+> not shape-compatible with this trainer's 16 kHz boundary layers.
+
+This repository provides RVQ training, mel reconstruction pretraining,
+adversarial fine-tuning, Hugging Face export, and checkpoint inference. It is
+not affiliated with or endorsed by the OpenMOSS team.
+
+## At a glance
+
+| Property | This model | Official MOSS Nano |
+| --- | --- | --- |
+| Sample rate | **16 kHz** | 48 kHz |
+| Channels | 2 by default; mono supported | 2 |
+| Frame rate | 12.5 Hz | 12.5 Hz |
+| RVQ | 16 × 1,024 entries | 16 × 1,024 entries |
+| Maximum bitrate | 2 kbps | 2 kbps |
+| Pretrained initialization | No | Yes |
+| Public API | `AutoModel`, `encode`, `decode`, streaming | Same |
+
+## Quick start
+
+```bash
+python3 -m pip install -r requirements.txt
+hf download youspeech/moss_nano_trainer_unofficial moss_nano_16khz.ckpt \
+  --local-dir checkpoints
+
+CKPT=checkpoints/moss_nano_16khz.ckpt \
+INPUT_DIR=samples/input \
+OUTPUT_DIR=recon_wavs_channel1 \
+./inference.sh
+```
+
+The exported Transformers model can also be loaded directly:
+
+```python
+from transformers import AutoModel
+
+model = AutoModel.from_pretrained(
+    "youspeech/moss_nano_trainer_unofficial",
+    trust_remote_code=True,
+).eval()
+```
 
 ## Features
 
 - 16 kHz mono or stereo training at 12.5 codec frames per second
-- 16 residual codebooks with 1,024 entries each (2 kbps using all codebooks)
+- 16 residual codebooks with 1,024 entries each
 - L2-normalized latent and code vectors with random RVQ prefix dropout
 - 250,000 reconstruction batches followed by 250,000 GAN batches
 - resumable Lightning checkpoints and TensorBoard logging
-
-The 16 kHz boundary layers are not shape-compatible with the official 48 kHz
-pretrained model, so this trainer starts from random initialization.
+- tested compatibility with the official OpenMOSS public and streaming APIs
 
 ## Installation
 
@@ -115,7 +174,7 @@ channels, so inference exports channel index 1 as mono by default. Set
 `OUTPUT_CHANNEL=0` to select the other channel. Channel selection only affects
 WAV export; the model and checkpoint remain two-channel.
 
-### OpenMOSS example compatibility
+## OpenMOSS API compatibility
 
 The Hugging Face export supports the same public waveform API used by the
 official MOSS Audio Tokenizer Nano example: `AutoModel`, `encode`, `decode`,
@@ -153,7 +212,7 @@ the exported 16 kHz checkpoint. See
 [OpenMOSS API compatibility](docs/openmoss_compatibility.md) for runnable
 versions of the official examples.
 
-## Pretrained checkpoint
+## Checkpoint download
 
 The development checkpoint is published at:
 
@@ -176,10 +235,13 @@ from channel index 1. They are qualitative examples, not an evaluation set.
 
 TensorBoard timestamps were inspected on 2026-09-10 (Asia/Seoul):
 
-- first logged batch: 0 at 2026-09-08 08:37:27
-- latest logged batch: 261,168 at 2026-09-10 07:27:48
-- measured elapsed wall time: 46 hours 50 minutes
-- stage 2: 11,168 adversarial batches completed
+| Metric | Value |
+| --- | ---: |
+| First logged batch | 0 at 2026-09-08 08:37:27 |
+| Latest logged batch | 261,168 at 2026-09-10 07:27:48 |
+| Measured wall time | 46 hours 50 minutes |
+| Current stage | Stage 2 — adversarial training |
+| GAN batches completed | 11,168 |
 
 This is a point-in-time record, not a claim about final model quality.
 Checkpoints and TensorBoard event files are excluded from the Git repository.
