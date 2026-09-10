@@ -98,6 +98,9 @@ Python 3.10 or newer is recommended. Development was validated with Python
 
 ## Dataset
 
+The published development checkpoint was trained on the
+[LibriTTS](https://doi.org/10.21437/Interspeech.2019-2441) dataset.
+
 Text manifests contain one `id|/absolute/path/audio.wav` entry per line. JSON
 and JSONL manifests use `audio_filepath` and may include `duration`. Audio is
 resampled to 16 kHz and cropped or padded to 160,000 samples (10 seconds).
@@ -279,5 +282,14 @@ Please cite the original work:
   archivePrefix = {arXiv},
   primaryClass = {cs.SD},
   url          = {https://arxiv.org/abs/2602.10934}
+}
+
+@inproceedings{zen2019libritts,
+  title     = {LibriTTS: A Corpus Derived from LibriSpeech for Text-to-Speech},
+  author    = {Zen, Heiga and Dang, Viet and Clark, Rob and Zhang, Yu and Weiss, Ron J. and Jia, Ye and Chen, Zhifeng and Wu, Yong},
+  booktitle = {Proceedings of Interspeech 2019},
+  pages     = {1526--1530},
+  year      = {2019},
+  doi       = {10.21437/Interspeech.2019-2441}
 }
 ```
