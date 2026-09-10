@@ -15,6 +15,9 @@ lightning_logs/
 # Local inference/export artifacts
 recon_wavs*/
 optimum-executorch/
+hf_export/
+onnx_export/
+*.onnx
 *.pte
 litdd
 swa

@@ -54,6 +54,27 @@ model = AutoModel.from_pretrained(
 ).eval()
 ```
 
+Export a Lightning checkpoint to a local Hugging Face model directory, then
+export and validate the encoder and decoder as separate ONNX graphs:
+
+```bash
+python3 export_hf.py checkpoints/moss_nano_16khz.ckpt hf_export/latest
+python3 -m moss_onnx.export_onnx \
+  --model_path hf_export/latest \
+  --output_dir hf_export/latest/onnx \
+  --validate
+
+python3 -m moss_onnx.inference \
+  samples/input/2078_142845_000085_000003_original_16khz.wav \
+  onnx_reconstructed.wav \
+  --model-dir hf_export/latest/onnx \
+  --cpu
+```
+
+The ONNX encoder pads input to the 1,280-sample hop internally in the runtime
+wrapper. Generated Hugging Face weights, ONNX graphs, and reconstructions are
+local artifacts and are intentionally excluded from Git.
+
 ## Features
 
 - 16 kHz mono or stereo training at 12.5 codec frames per second
@@ -62,6 +83,7 @@ model = AutoModel.from_pretrained(
 - 250,000 reconstruction batches followed by 250,000 GAN batches
 - resumable Lightning checkpoints and TensorBoard logging
 - tested compatibility with the official OpenMOSS public and streaming APIs
+- Hugging Face checkpoint export and ONNX Runtime encode/decode
 
 ## Installation
 

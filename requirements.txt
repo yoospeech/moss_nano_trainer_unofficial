@@ -20,3 +20,8 @@ tensorboard>=2.12,<3.0
 
 # Vendored MOSS Nano architecture (validated with 4.57.1)
 transformers==4.57.1
+
+# ONNX export and runtime inference
+onnx>=1.17,<2.0
+onnxscript>=0.3,<1.0
+onnxruntime>=1.20,<2.0
