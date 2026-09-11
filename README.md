@@ -234,23 +234,34 @@ hf download youspeech/moss_nano_trainer_unofficial moss_nano_16khz.ckpt \
 ## Audio samples
 
 `samples/input/` contains the development utterance at 24 kHz and its 16 kHz
-resample. `samples/reconstructed/` contains mono reconstructions exported
-from channel index 1. They are qualitative examples, not an evaluation set.
+resample. The following mono reconstructions were exported from channel index
+1 using the checkpoint at training batch 327,500:
+
+| RVQ prefix | Approx. bitrate | Sample |
+| ---: | ---: | --- |
+| 4 codebooks | 0.5 kbps | [Listen](samples/reconstructed/2078_142845_000085_000003_reconstructed_4vq.wav) |
+| 8 codebooks | 1.0 kbps | [Listen](samples/reconstructed/2078_142845_000085_000003_reconstructed_8vq.wav) |
+| 16 codebooks | 2.0 kbps | [Listen](samples/reconstructed/2078_142845_000085_000003_reconstructed_16vq.wav) |
+
+These are qualitative examples, not an evaluation set.
 
 ## Training snapshot
 
-TensorBoard timestamps were inspected on 2026-09-10 (Asia/Seoul):
+The published checkpoint was saved on 2026-09-11 at 19:55 (Asia/Seoul):
 
 | Metric | Value |
 | --- | ---: |
 | First logged batch | 0 at 2026-09-08 08:37:27 |
-| Latest logged batch | 261,168 at 2026-09-10 07:27:48 |
-| Measured wall time | 46 hours 50 minutes |
+| Checkpoint training batch | 327,500 |
+| Lightning optimizer step | 405,000 |
+| Elapsed wall-clock time | 3 days 11 hours 18 minutes |
 | Current stage | Stage 2 — adversarial training |
-| GAN batches completed | 11,168 |
+| GAN batches completed | 77,500 |
 
-This is a point-in-time record, not a claim about final model quality.
-Checkpoints and TensorBoard event files are excluded from the Git repository.
+The elapsed time includes any pauses between logged training sessions and is
+not a measurement of active GPU time. This is a point-in-time record, not a
+claim about final model quality. Checkpoints and TensorBoard event files are
+excluded from the Git repository.
 
 ## License
 
